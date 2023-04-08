@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/DENTAL-SCHEDULER-WORKDIR.iml" filepath="$PROJECT_DIR$/.idea/DENTAL-SCHEDULER-WORKDIR.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dental-scheduler/dental-scheduler.iml" filepath="$PROJECT_DIR$/dental-scheduler/dental-scheduler.iml" />
+    </modules>
+  </component>
+</project>

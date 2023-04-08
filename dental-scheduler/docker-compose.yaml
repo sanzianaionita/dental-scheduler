@@ -1,0 +1,36 @@
+version: "3"
+services:
+  web-app:
+    image: "sanzianaionita/dental_backend:1.0.3"
+    container_name: backend
+    restart: on-failure
+    ports:
+      - 8090:8090
+    depends_on:
+      maria_db:
+        condition: service_healthy
+
+    networks:
+      - docker-net
+  maria_db:
+    image: "mariadb:latest"
+    restart: on-failure
+    container_name: maria_db
+    ports:
+      - 3600:3306
+    expose:
+      - 3600
+    environment:
+      MYSQL_DATABASE: dental_scheduler
+      MYSQL_USER: dental_scheduler
+      MYSQL_PASSWORD: dental_scheduler
+      MYSQL_ROOT_PASSWORD: admin
+    networks:
+      - docker-net
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 5
+networks:
+  docker-net:
+    driver: bridge
