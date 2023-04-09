@@ -145,6 +145,7 @@ public class AppointmentServiceTest {
 
         when(appointmentRepository.findAllByPatientId(any())).thenReturn(Collections.singletonList(Utils.returnAppointment()));
         when(appointmentMapper.toDTO(anyList())).thenReturn(Collections.singletonList(Utils.returnAppointmentDto()));
+        when(patientRepository.findById(any())).thenReturn(Optional.of(Utils.createPatient()));
 
         List<AppointmentDTO> allAppointmentsForPatient = appointmentService.getAllAppointmentsForPatient(any());
         assertNotEquals(0, allAppointmentsForPatient.size());
@@ -155,8 +156,9 @@ public class AppointmentServiceTest {
 
         when(appointmentRepository.findAllByDoctorId(any(), any())).thenReturn(Collections.singletonList(Utils.returnAppointment()));
         when(appointmentMapper.toDTO(anyList())).thenReturn(Collections.singletonList(Utils.returnAppointmentDto()));
+        when(doctorRepository.findById(any())).thenReturn(Optional.of(Utils.createDoctor()));
 
-        List<AppointmentDTO> allAppointmentsForDoctor = appointmentService.getAllAppointmentsForDoctor(eq(any()));
+        List<AppointmentDTO> allAppointmentsForDoctor = appointmentService.getAllAppointmentsForDoctor(any());
         assertNotEquals(0, allAppointmentsForDoctor.size());
     }
 

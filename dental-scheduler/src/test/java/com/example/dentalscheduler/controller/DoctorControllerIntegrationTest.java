@@ -1,7 +1,13 @@
 package com.example.dentalscheduler.controller;
 
 import com.example.dentalscheduler.dto.DoctorDTO;
+import com.example.dentalscheduler.enums.Role;
 import com.example.dentalscheduler.exceptions.CustomException;
+import com.example.dentalscheduler.mapper.DoctorMapper;
+import com.example.dentalscheduler.model.Doctor;
+import com.example.dentalscheduler.model.User;
+import com.example.dentalscheduler.repository.DoctorRepository;
+import com.example.dentalscheduler.repository.UserRepository;
 import com.example.dentalscheduler.security.util.SecurityUtils;
 import com.example.dentalscheduler.service.DoctorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +51,15 @@ class DoctorControllerIntegrationTest {
     @Autowired
     private DoctorService doctorService;
 
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DoctorMapper doctorMapper;
+
     private static MockedStatic<SecurityUtils> securityUtils;
 
     @BeforeAll
@@ -59,7 +74,6 @@ class DoctorControllerIntegrationTest {
 
     @Test
     public void testGetAllDoctors_expect200AndEmptyBody() throws Exception {
-
         mockMvc
                 .perform(get("/doctor/all"))
                 .andExpect(status().isOk())
@@ -84,7 +98,7 @@ class DoctorControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].CNP").value(doctor.CNP()))
                 .andExpect(jsonPath("$[0].appointments", hasSize(0)));
 
-        doctorService.deleteDoctor(doctor.id());
+        doctorRepository.deleteAll();
     }
 
     @Test
@@ -114,18 +128,22 @@ class DoctorControllerIntegrationTest {
                 .andExpect(jsonPath("$.CNP").value(doctor.CNP()))
                 .andExpect(jsonPath("$.id").value(String.valueOf(doctor.id())));
 
-        doctorService.deleteDoctor(doctor.id());
+        doctorRepository.deleteAll();
     }
 
     @Test
+    @Transactional
     public void testDeleteDoctor() throws Exception {
 
-        DoctorDTO doctorDTO = createMockedDoctor();
-        DoctorDTO doctor = doctorService.createDoctor(doctorDTO);
+        User save = userRepository.save(createUser());
+        Doctor doctor = createDoctor();
+        doctor.setUser(save);
+
+        Doctor savedDoctor = doctorRepository.save(doctor);
 
         mockMvc
                 .perform(delete("/doctor")
-                        .param("doctorId", String.valueOf(doctor.id())
+                        .param("doctorId", String.valueOf(savedDoctor.getId())
                         ))
                 .andExpect(status().isOk());
 
@@ -155,7 +173,7 @@ class DoctorControllerIntegrationTest {
         List<DoctorDTO> allDoctors = doctorService.getAllDoctors();
         assertEquals(1, allDoctors.size());
 
-        doctorService.deleteDoctor(doctorDTO.id());
+        doctorRepository.deleteAll();
     }
 
     @Test
@@ -169,12 +187,32 @@ class DoctorControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof CustomException))
-                .andExpect(result -> assertEquals("This doctor already exists!", Objects.requireNonNull((CustomException)result.getResolvedException()).getErrorMessage()));
+                .andExpect(result -> assertEquals("This doctor already exists!", Objects.requireNonNull((CustomException) result.getResolvedException()).getErrorMessage()));
 
-        doctorService.deleteDoctor(createdDoctor.id());
+        doctorRepository.deleteAll();
+    }
+
+    private static Doctor createDoctor() {
+        Doctor doctor = new Doctor();
+        doctor.setCNP("123");
+        doctor.setPhoneNumber("123");
+        doctor.setLastName("123");
+        doctor.setFirstName("123");
+
+        return doctor;
     }
 
     private static DoctorDTO createMockedDoctor() {
         return new DoctorDTO(1000L, "first_name", "last_name", "phone_number", "cnp", Collections.emptyList());
+    }
+
+    private static User createUser() {
+        User user = new User();
+        user.setActive(true);
+        user.setPassword("test");
+        user.setUsername("test");
+        user.setRole(Role.EMPLOYEE);
+
+        return user;
     }
 }

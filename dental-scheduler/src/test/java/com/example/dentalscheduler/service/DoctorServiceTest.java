@@ -6,6 +6,7 @@ import com.example.dentalscheduler.mapper.DoctorMapper;
 import com.example.dentalscheduler.mapper.DoctorMapperImpl;
 import com.example.dentalscheduler.model.Doctor;
 import com.example.dentalscheduler.repository.DoctorRepository;
+import com.example.dentalscheduler.repository.UserRepository;
 import com.example.dentalscheduler.security.util.SecurityUtils;
 import com.example.dentalscheduler.utils.Utils;
 import org.junit.jupiter.api.AfterAll;
@@ -25,6 +26,7 @@ public class DoctorServiceTest {
     private static DoctorMapper doctorMapper;
     private static DoctorRepository doctorRepository;
     private static DoctorService doctorService;
+    private static UserRepository userRepository;
     private static MockedStatic<SecurityUtils> securityUtilsMockedStatic;
 
     @BeforeAll
@@ -32,8 +34,9 @@ public class DoctorServiceTest {
 
         doctorMapper = mock(DoctorMapper.class);
         doctorRepository = mock(DoctorRepository.class);
+        userRepository = mock(UserRepository.class);
         securityUtilsMockedStatic = mockStatic(SecurityUtils.class);
-        doctorService = new DoctorService(doctorMapper, doctorRepository);
+        doctorService = new DoctorService(doctorMapper, doctorRepository, userRepository);
     }
 
     @AfterAll

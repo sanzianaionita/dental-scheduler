@@ -1,7 +1,14 @@
 package com.example.dentalscheduler.controller;
 
+import com.example.dentalscheduler.dto.DoctorDTO;
 import com.example.dentalscheduler.dto.PatientDTO;
+import com.example.dentalscheduler.enums.Role;
 import com.example.dentalscheduler.exceptions.CustomException;
+import com.example.dentalscheduler.model.Doctor;
+import com.example.dentalscheduler.model.Patient;
+import com.example.dentalscheduler.model.User;
+import com.example.dentalscheduler.repository.PatientRepository;
+import com.example.dentalscheduler.repository.UserRepository;
 import com.example.dentalscheduler.security.util.SecurityUtils;
 import com.example.dentalscheduler.service.PatientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +52,12 @@ public class PatientControllerIntegrationTest {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     private static MockedStatic<SecurityUtils> securityUtils;
 
     @BeforeAll
@@ -84,7 +97,7 @@ public class PatientControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].CNP").value(patient.CNP()))
                 .andExpect(jsonPath("$[0].appointments", hasSize(0)));
 
-        patientService.deletePatient(patient.id());
+        patientRepository.deleteAll();
     }
 
     @Test
@@ -114,18 +127,21 @@ public class PatientControllerIntegrationTest {
                 .andExpect(jsonPath("$.CNP").value(patient.CNP()))
                 .andExpect(jsonPath("$.id").value(String.valueOf(patient.id())));
 
-        patientService.deletePatient(patient.id());
+        patientRepository.deleteAll();
     }
 
     @Test
     public void testDeletePatient() throws Exception {
 
-        PatientDTO patientDTO = createMockedPatient();
-        PatientDTO patient = patientService.createPatient(patientDTO);
+        User save = userRepository.save(createUser());
+        Patient patient = createPatient();
+        patient.setUser(save);
+
+        Patient savedPatient = patientRepository.save(patient);
 
         mockMvc
                 .perform(delete("/patient")
-                        .param("patientId", String.valueOf(patient.id())
+                        .param("patientId", String.valueOf(savedPatient.getId())
                         ))
                 .andExpect(status().isOk());
 
@@ -146,7 +162,7 @@ public class PatientControllerIntegrationTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof CustomException))
                 .andExpect(result -> assertEquals("This patient already exists!", Objects.requireNonNull((CustomException) result.getResolvedException()).getErrorMessage()));
 
-        patientService.deletePatient(patient.id());
+        patientRepository.deleteAll();
     }
 
     @Test
@@ -171,7 +187,27 @@ public class PatientControllerIntegrationTest {
         List<PatientDTO> allPatients = patientService.getAllPatients();
         assertEquals(1, allPatients.size());
 
-        patientService.deletePatient(patientDTO.id());
+        patientRepository.deleteAll();
+    }
+
+    private static Patient createPatient() {
+        Patient patient = new Patient();
+        patient.setCNP("123");
+        patient.setPhoneNumber("123");
+        patient.setLastName("123");
+        patient.setFirstName("123");
+
+        return patient;
+    }
+
+    private static User createUser() {
+        User user = new User();
+        user.setActive(true);
+        user.setPassword("test");
+        user.setUsername("test");
+        user.setRole(Role.CLIENT);
+
+        return user;
     }
 
     private static PatientDTO createMockedPatient() {
