@@ -73,10 +73,10 @@ public class PatientController {
         return ResponseEntity.ok(patientDTO);
     }
 
-    @Operation(summary = "Delete a client")
+    @Operation(summary = "Delete a patient")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Client deleted",
+                    description = "Patient deleted",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401",
                     description = "Unauthorized",
@@ -96,10 +96,10 @@ public class PatientController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Create a new client")
+    @Operation(summary = "Create a new patient")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "New client created",
+                    description = "New patient created",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401",
                     description = "Unauthorized",
@@ -112,7 +112,7 @@ public class PatientController {
                     content = @Content)
     })
     @Hidden
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<PatientDTO> createPatient(@RequestBody PatientDTO patientDTO) {
 

@@ -90,6 +90,7 @@ public class AuthenticationService {
         user.setRole(Role.EMPLOYEE);
         user.setPassword(configClass.passwordEncoder().encode(password));
         user.setUsername(username);
+        user.setActive(true);
 
         User savedUser = userRepository.save(user);
 
@@ -116,6 +117,7 @@ public class AuthenticationService {
         user.setRole(Role.CLIENT);
         user.setPassword(configClass.passwordEncoder().encode(password));
         user.setUsername(username);
+        user.setActive(true);
 
         User savedUser = userRepository.save(user);
 

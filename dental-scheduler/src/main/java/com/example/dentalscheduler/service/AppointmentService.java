@@ -126,11 +126,21 @@ public class AppointmentService {
 
     public List<AppointmentDTO> getAllAppointmentsForPatient(Long patientId) {
 
+        Optional<Patient> byId = patientRepository.findById(patientId);
+        if (byId.isEmpty()){
+            throw new CustomException("Client does not exist!", HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value());
+        }
+
         List<Appointment> allByPatientId = appointmentRepository.findAllByPatientId(patientId);
         return appointmentMapper.toDTO(allByPatientId);
     }
 
     public List<AppointmentDTO> getAllAppointmentsForDoctor(Long doctorId) {
+
+        Optional<Doctor> byId = doctorRepository.findById(doctorId);
+        if (byId.isEmpty()){
+            throw new CustomException("Doctor does not exist!", HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value());
+        }
 
         List<Appointment> allByDoctorId = appointmentRepository.findAllByDoctorId(doctorId, Sort.by(Sort.Direction.ASC, "appointmentDate"));
         return appointmentMapper.toDTO(allByDoctorId);

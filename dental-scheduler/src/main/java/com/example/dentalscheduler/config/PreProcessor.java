@@ -27,7 +27,7 @@ public class PreProcessor implements ApplicationRunner {
         appUser.setRole(Role.ADMIN);
         appUser.setUsername("admin");
         appUser.setPassword(configClass.passwordEncoder().encode("admin"));
-
+        appUser.setActive(true);
         Optional<User> byUsername = userRepository.findByUsername(appUser.getUsername());
 
         if (byUsername.isEmpty()) {

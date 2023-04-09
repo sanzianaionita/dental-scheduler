@@ -4,7 +4,9 @@ import com.example.dentalscheduler.dto.DoctorDTO;
 import com.example.dentalscheduler.exceptions.CustomException;
 import com.example.dentalscheduler.mapper.DoctorMapper;
 import com.example.dentalscheduler.model.Doctor;
+import com.example.dentalscheduler.model.User;
 import com.example.dentalscheduler.repository.DoctorRepository;
+import com.example.dentalscheduler.repository.UserRepository;
 import com.example.dentalscheduler.security.util.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ public class DoctorService {
 
     private final DoctorMapper doctorMapper;
     private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
 
     public List<DoctorDTO> getAllDoctors() {
 
@@ -68,6 +71,13 @@ public class DoctorService {
         Optional<Doctor> byId = doctorRepository.findById(doctorId);
         if (byId.isEmpty()) {
             throw new CustomException("Doctor does not exist!", HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value());
+        }
+
+        Optional<User> userOptional = userRepository.findById(byId.get().getUser().getId());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setActive(false);
+            userRepository.save(user);
         }
 
         doctorRepository.deleteById(doctorId);
