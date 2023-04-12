@@ -17,7 +17,7 @@ public interface AppointmentMapper {
     @Mapping(target = "patient", source = "patientId")
     Appointment toEntity(AppointmentDTO appointmentDTO);
 
-    @Mapping(target = "doctorName", expression = "java(appointment.getDoctor() == null ?  null : appointment.getDoctor().getFirstName() + \" \" + appointment.getDoctor().getLastName())")
+    @Mapping(target = "doctorName", expression = "java(appointment.getDoctor() == null ? null : appointment.getDoctor().getFirstName() + \" \" + appointment.getDoctor().getLastName())")
     @Mapping(target = "doctorId", source = "doctor.id")
     @Mapping(target = "patientName", expression = "java(appointment.getPatient() == null ? null : appointment.getPatient().getFirstName() + \" \" + appointment.getPatient().getLastName())")
     @Mapping(target = "patientId", source = "patient.id")

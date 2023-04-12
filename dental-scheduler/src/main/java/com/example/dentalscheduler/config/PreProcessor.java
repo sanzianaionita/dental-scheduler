@@ -23,6 +23,7 @@ public class PreProcessor implements ApplicationRunner {
     }
 
     private void insertAdminUser() {
+
         User appUser = new User();
         appUser.setRole(Role.ADMIN);
         appUser.setUsername("admin");
@@ -33,6 +34,5 @@ public class PreProcessor implements ApplicationRunner {
         if (byUsername.isEmpty()) {
             userRepository.save(appUser);
         }
-
     }
 }

@@ -15,6 +15,7 @@ public class SwaggerConfiguration {
 
     @Bean
     public OpenAPI customOpenAPI() {
+
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes(
                         "bearer",
@@ -27,8 +28,8 @@ public class SwaggerConfiguration {
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("bearer", Arrays.asList("read", "write")))
                 .info(new Info()
-                        .title("Softbinator Labs 2023 OpenAPI")
-                        .description("An OpenAPI documentation for the Softbinator Labs 2023 course.")
+                        .title("Dental Clinic Scheduler")
+                        .description("An OpenAPI documentation for the Dental Clinic Scheduler.")
                         .version("V1.0"));
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointment")
 @AllArgsConstructor
-@Tag(name = "Appointment Controller", description = "Api used for query list of appointments, edit, delete and create appointment, get all the appointments for a doctor or a patient and " +
+@Tag(name = "Appointment Controller", description = "Api used to query a list of appointments, edit, delete and create appointment, get all the appointments for a doctor or a patient and " +
         "create an appointment as a doctor.")
 public class AppointmentController {
 
